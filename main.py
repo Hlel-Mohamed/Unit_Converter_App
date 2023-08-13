@@ -12,18 +12,58 @@ def convert_length(value, unit_from, unit_to):
     return res
 
 
+def convert_mass(value, unit_from, unit_to):
+    g = value * convertToGram[unit_from]
+    res = g * convertFromGram[unit_to]
+    return res
+
+
+def convert_temperature(value, unit_from, unit_to):
+    if unit_from == unit_to:
+        return value
+    conversion_function = conversion_factors.get((unit_from, unit_to))
+    return conversion_function(value)
+
+
 def convert():
-    # Accessing the input value from the valueEntry widget
-    global input_value
     try:
         input_value = float(valueEntry.get())
     except ValueError:
         messagebox.showerror('Error', 'Not a number!!')
-    unit_from = unitFromCombo.get()  # Assuming you have a combo box for unit selection
-    unit_to = unitToCombo.get()  # Assuming you have another combo box for unit selection
+        return
+    unit_from = unitFromCombo.get()
+    unit_to = unitToCombo.get()
 
-    result = convert_length(input_value, unit_from, unit_to)
+    system_type = systemCombo.get()
+    result = 0.0
+
+    if system_type == "Length":
+        result = convert_length(input_value, unit_from, unit_to)
+    elif system_type == "Mass":
+        result = convert_mass(input_value, unit_from, unit_to)
+    elif system_type == "Temperature":
+        result = convert_temperature(input_value, unit_from, unit_to)
+    else:
+        messagebox.showerror('Error', 'Choose a system!!')
     resultLabel.configure(text=f"{result:.2f} {unit_to}")
+
+
+def change_system(event):
+    if systemCombo.get() == 'Length':
+        unitFromCombo.configure(values=['NM', 'MM', 'CM', 'DM', 'M', 'DAM', 'HM', 'KM', 'INCH', 'FEET', 'YARD', 'MILE'])
+        unitFromCombo.set('M')
+        unitToCombo.configure(values=['NM', 'MM', 'CM', 'DM', 'M', 'DAM', 'HM', 'KM', 'INCH', 'FEET', 'YARD', 'MILE'])
+        unitToCombo.set('M')
+    elif systemCombo.get() == 'Mass':
+        unitFromCombo.configure(values=['MG', 'G', 'KG', 'TON', 'POUND', 'OUNCE'])
+        unitFromCombo.set('G')
+        unitToCombo.configure(values=['MG', 'G', 'KG', 'TON', 'POUND', 'OUNCE'])
+        unitToCombo.set('G')
+    elif systemCombo.get() == 'Temperature':
+        unitFromCombo.configure(values=['C', 'F', 'K'])
+        unitFromCombo.set('C')
+        unitToCombo.configure(values=['C', 'F', 'K'])
+        unitToCombo.set('C')
 
 
 ctk.set_appearance_mode("dark")
@@ -44,9 +84,11 @@ sysFrame.pack(padx=20, pady=10)
 
 systemCombo = ctk.CTkComboBox(master=sysFrame,
                               state="readonly",
-                              values=['Length', 'Weight', 'Heat'],
-                              width=100)
+                              values=['Length', 'Mass', 'Temperature'],
+                              width=100,
+                              command=change_system)
 systemCombo.pack(padx=10, pady=12, side=RIGHT)
+systemCombo.set('Length')
 
 inFrame = ctk.CTkFrame(master=frame)
 inFrame.pack(padx=20, pady=10)
