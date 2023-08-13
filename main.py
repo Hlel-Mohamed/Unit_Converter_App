@@ -5,7 +5,6 @@ from constants import *
 import customtkinter as ctk
 
 
-# method to convert the length unit
 def convert_length(value, unit_from, unit_to):
     m = value * convertToMeter[unit_from]
     res = m * convertFromMeter[unit_to]
@@ -49,75 +48,90 @@ def convert():
 
 
 def change_system(event):
-    if systemCombo.get() == 'Length':
-        unitFromCombo.configure(values=['NM', 'MM', 'CM', 'DM', 'M', 'DAM', 'HM', 'KM', 'INCH', 'FEET', 'YARD', 'MILE'])
-        unitFromCombo.set('M')
-        unitToCombo.configure(values=['NM', 'MM', 'CM', 'DM', 'M', 'DAM', 'HM', 'KM', 'INCH', 'FEET', 'YARD', 'MILE'])
-        unitToCombo.set('M')
-    elif systemCombo.get() == 'Mass':
-        unitFromCombo.configure(values=['MG', 'G', 'KG', 'TON', 'POUND', 'OUNCE'])
-        unitFromCombo.set('G')
-        unitToCombo.configure(values=['MG', 'G', 'KG', 'TON', 'POUND', 'OUNCE'])
-        unitToCombo.set('G')
-    elif systemCombo.get() == 'Temperature':
-        unitFromCombo.configure(values=['C', 'F', 'K'])
-        unitFromCombo.set('C')
-        unitToCombo.configure(values=['C', 'F', 'K'])
-        unitToCombo.set('C')
+    system = systemCombo.get()
+
+    length_units = ['NM', 'MM', 'CM', 'DM', 'M', 'DAM', 'HM', 'KM', 'INCH', 'FEET', 'YARD', 'MILE']
+    mass_units = ['MG', 'G', 'KG', 'TON', 'POUND', 'OUNCE']
+    temperature_units = ['C', 'F', 'K']
+
+    if system == 'Length':
+        units = length_units
+    elif system == 'Mass':
+        units = mass_units
+    elif system == 'Temperature':
+        units = temperature_units
+    else:
+        return
+
+    unitFromCombo.configure(values=units)
+    unitFromCombo.set(units[0])
+    unitToCombo.configure(values=units)
+    unitToCombo.set(units[0])
 
 
-ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("dark-blue")
+if __name__ == '__main__':
+    ctk.set_appearance_mode("dark")
+    ctk.set_default_color_theme("dark-blue")
 
-root = ctk.CTk()
-root.geometry("500x400")
-root.title("Unit Converter App")
+    root = ctk.CTk()
 
-frame = ctk.CTkFrame(master=root)
-frame.pack(padx=20, pady=20, fill="both", expand=True)
+    width = 500
+    height = 400
 
-mainLabel = ctk.CTkLabel(master=frame, text="Unit Converter", font=("Roboto", 24))
-mainLabel.pack(padx=10, pady=12)
+    x = (root.winfo_screenwidth() / 2) - (width / 2)
+    y = (root.winfo_screenheight() / 2) - (height / 2)
 
-sysFrame = ctk.CTkFrame(master=frame)
-sysFrame.pack(padx=20, pady=10)
+    root.geometry('%dx%d+%d+%d' % (width, height, x, y))
+    root.title("Unit Converter App")
+    root.resizable(False, False)
 
-systemCombo = ctk.CTkComboBox(master=sysFrame,
-                              state="readonly",
-                              values=['Length', 'Mass', 'Temperature'],
-                              width=100,
-                              command=change_system)
-systemCombo.pack(padx=10, pady=12, side=RIGHT)
-systemCombo.set('Length')
+    frame = ctk.CTkFrame(master=root)
+    frame.pack(padx=20, pady=20, fill="both", expand=True)
 
-inFrame = ctk.CTkFrame(master=frame)
-inFrame.pack(padx=20, pady=10)
+    mainLabel = ctk.CTkLabel(master=frame, text="Unit Converter", font=("Roboto", 24))
+    mainLabel.pack(padx=10, pady=12)
 
-valueEntry = ctk.CTkEntry(master=inFrame, placeholder_text="Input")
-valueEntry.pack(padx=10, pady=12, side=LEFT)
+    sysFrame = ctk.CTkFrame(master=frame)
+    sysFrame.pack(padx=20, pady=10)
 
-unitFromCombo = ctk.CTkComboBox(master=inFrame,
-                                state="readonly",
-                                values=['NM', 'MM', 'CM', 'DM', 'M', 'DAM', 'HM', 'KM', 'INCH', 'FEET', 'YARD', 'MILE'],
-                                width=100)
-unitFromCombo.pack(padx=10, pady=12, side=RIGHT)
-unitFromCombo.set('M')
+    systemCombo = ctk.CTkComboBox(master=sysFrame,
+                                  state="readonly",
+                                  values=['Length', 'Mass', 'Temperature'],
+                                  width=100,
+                                  command=change_system)
+    systemCombo.pack(padx=10, pady=12, side=RIGHT)
+    systemCombo.set('Length')
 
-outFrame = ctk.CTkFrame(master=frame)
-outFrame.pack(padx=20, pady=10)
+    inFrame = ctk.CTkFrame(master=frame)
+    inFrame.pack(padx=20, pady=10)
 
-unitToCombo = ctk.CTkComboBox(master=outFrame,
-                              state="readonly",
-                              values=['NM', 'MM', 'CM', 'DM', 'M', 'DAM', 'HM', 'KM', 'INCH', 'FEET', 'YARD', 'MILE'],
-                              width=100)
-unitToCombo.pack(padx=10, pady=12, side=RIGHT)
-unitToCombo.set('M')
+    valueEntry = ctk.CTkEntry(master=inFrame, placeholder_text="Input")
+    valueEntry.pack(padx=10, pady=12, side=LEFT)
 
-resultLabel = ctk.CTkLabel(master=outFrame, text="", width=140, bg_color="white", text_color="black",
-                           font=("Roboto", 16))
-resultLabel.pack(padx=10, pady=12, side=LEFT)
+    unitFromCombo = ctk.CTkComboBox(master=inFrame,
+                                    state="readonly",
+                                    values=['NM', 'MM', 'CM', 'DM', 'M', 'DAM', 'HM', 'KM', 'INCH', 'FEET', 'YARD',
+                                            'MILE'],
+                                    width=100)
+    unitFromCombo.pack(padx=10, pady=12, side=RIGHT)
+    unitFromCombo.set('M')
 
-convertButton = ctk.CTkButton(master=frame, text="Convert", command=convert)
-convertButton.pack(padx=10, pady=12)
+    outFrame = ctk.CTkFrame(master=frame)
+    outFrame.pack(padx=20, pady=10)
 
-root.mainloop()
+    unitToCombo = ctk.CTkComboBox(master=outFrame,
+                                  state="readonly",
+                                  values=['NM', 'MM', 'CM', 'DM', 'M', 'DAM', 'HM', 'KM', 'INCH', 'FEET', 'YARD',
+                                          'MILE'],
+                                  width=100)
+    unitToCombo.pack(padx=10, pady=12, side=RIGHT)
+    unitToCombo.set('M')
+
+    resultLabel = ctk.CTkLabel(master=outFrame, text="", width=140, bg_color="white", text_color="black",
+                               font=("Roboto", 16))
+    resultLabel.pack(padx=10, pady=12, side=LEFT)
+
+    convertButton = ctk.CTkButton(master=frame, text="Convert", command=convert)
+    convertButton.pack(padx=10, pady=12)
+
+    root.mainloop()
